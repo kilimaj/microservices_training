@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LoanDetails extends JpaRepository<LoanDetails, Long> {
 
+	@Query(value = "select max(loan.loanId) from LoanDetails loan")
+	long getMaxId(long loanId);
+	
 	@Query(value = "select loan.status from LoanDetails loan where loan.loanId=?1")
 	String checkLoanStatus(long loanId);
 }
