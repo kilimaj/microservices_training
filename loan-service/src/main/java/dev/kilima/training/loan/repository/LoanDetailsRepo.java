@@ -14,6 +14,6 @@ public interface LoanDetailsRepo extends JpaRepository<LoanDetails, Long> {
 	@Query(value = "select max(loan.loanId) from LoanDetails loan")
 	Optional<Integer> getMaxId();
 
-	@Query(value = "select loan.status from LoanDetails loan where loan.loanId=?1")
+	@Query(value = "select loan.loanStatus from LoanDetails loan where loan.loanId=?1")
 	String checkLoanStatus(long loanId);
 }
