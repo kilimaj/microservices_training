@@ -17,7 +17,7 @@ public class LoanServiceImpl implements LoanService {
 	LoanDetailsRepo repo;
 
 	@Override
-	public Optional<Integer> getMaxId() {
+	public Optional<Long> getMaxId() {
 		// TODO Auto-generated method stub
 		return repo.getMaxId();
 	}
@@ -29,8 +29,8 @@ public class LoanServiceImpl implements LoanService {
 	}
 
 	@Override
-	public int applyForLoan(LoanDetails loan) {
-		Optional<Integer> id = getMaxId();
+	public long applyForLoan(LoanDetails loan) {
+		Optional<Long> id = getMaxId();
 		if (id.isEmpty())
 			loan.setLoanId(1000);
 		else {
@@ -42,7 +42,7 @@ public class LoanServiceImpl implements LoanService {
 		loan.setDateApplied(dateApplied);
 		loan.setLoanStatus("APPLIED");
 		repo.save(loan);
-		return (int) loan.getLoanId();
+		return loan.getLoanId();
 	}
 
 }

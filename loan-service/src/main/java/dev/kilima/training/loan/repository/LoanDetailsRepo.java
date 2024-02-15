@@ -12,7 +12,7 @@ import dev.kilima.training.loan.entity.LoanDetails;
 public interface LoanDetailsRepo extends JpaRepository<LoanDetails, Long> {
 
 	@Query(value = "select max(loan.loanId) from LoanDetails loan")
-	Optional<Integer> getMaxId();
+	Optional<Long> getMaxId();
 
 	@Query(value = "select loan.loanStatus from LoanDetails loan where loan.loanId=?1")
 	String checkLoanStatus(long loanId);
