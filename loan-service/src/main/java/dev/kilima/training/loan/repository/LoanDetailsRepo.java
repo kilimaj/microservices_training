@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LoanDetails extends JpaRepository<LoanDetails, Long> {
+public interface LoanDetailsRepo extends JpaRepository<LoanDetailsRepo, Long> {
 
 	@Query(value = "select max(loan.loanId) from LoanDetails loan")
 	long getMaxId(long loanId);
