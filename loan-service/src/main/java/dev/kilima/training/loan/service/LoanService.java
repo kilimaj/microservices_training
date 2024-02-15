@@ -1,9 +1,12 @@
 package dev.kilima.training.loan.service;
 
+import java.util.Optional;
+
 import dev.kilima.training.loan.entity.LoanDetails;
 
 public interface LoanService {
-	long getMaxId();
+	Optional<Integer> getMaxId();
 	String checkLoanStatus(long loanId);
-	String applyForLoan(LoanDetails loan);
+	int applyForLoan(LoanDetails loan);
+	
 }

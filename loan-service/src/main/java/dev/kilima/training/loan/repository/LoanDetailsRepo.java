@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface LoanDetailsRepo extends JpaRepository<LoanDetailsRepo, Long> {
 
 	@Query(value = "select max(loan.loanId) from LoanDetails loan")
-	Optional<Integer> getMaxId(long loanId);
-	
+	Optional<Integer> getMaxId();
+
 	@Query(value = "select loan.status from LoanDetails loan where loan.loanId=?1")
 	String checkLoanStatus(long loanId);
 }
