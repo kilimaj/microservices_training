@@ -33,8 +33,14 @@ public class LoanController {
 		Optional<LoanDetails> details = loanService.checkLoanStatus(loanId);
 
 		String status = details.get().getLoanStatus();
-		if (status == "REJECTED")
+		if (status.equals("REJECTED"))
 			status = status.concat(" " + details.get().getRemarks());
 		return new ResponseEntity<String>(status, HttpStatus.OK);
+	}
+
+	@GetMapping("/verify/{loanId}")
+	public ResponseEntity<String> loanVerification(@PathVariable int loanId) {
+		String msg = loanService.loanVerification(loanId);
+		return new ResponseEntity<String>(msg, HttpStatus.OK);
 	}
 }

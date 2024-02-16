@@ -8,5 +8,6 @@ public interface LoanService {
 	Optional<Long> getMaxId();
 	Optional<LoanDetails> checkLoanStatus(long loanId);
 	long applyForLoan(LoanDetails loan);
+	String loanVerification(long loanId);
 	
 }

@@ -16,4 +16,7 @@ public interface LoanDetailsRepo extends JpaRepository<LoanDetails, Long> {
 
 	@Query(value = "select loan.loanStatus from LoanDetails loan where loan.loanId=?1")
 	String checkLoanStatus(long loanId);
+
+	@Query(value = "select loan from LoanDetails loan where loan.loanId=?1")
+	LoanDetails getLoanDetailsById(long loanId);
 }
