@@ -23,9 +23,9 @@ public class LoanServiceImpl implements LoanService {
 	}
 
 	@Override
-	public String checkLoanStatus(long loanId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<LoanDetails> checkLoanStatus(long loanId) {
+		Optional<LoanDetails> details = repo.findById(loanId);
+		return details;
 	}
 
 	@Override

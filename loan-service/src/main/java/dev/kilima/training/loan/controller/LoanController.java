@@ -1,8 +1,12 @@
 package dev.kilima.training.loan.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +26,15 @@ public class LoanController {
 		long id = loanService.applyForLoan(loan);
 		String mesg = "Applied ... Loan ID is " + id;
 		return new ResponseEntity<String>(mesg, HttpStatus.OK);
+	}
+
+	@GetMapping("/checkstatus/{loanId}")
+	public ResponseEntity<String> checkLoanStatus(@PathVariable long loanId) {
+		Optional<LoanDetails> details = loanService.checkLoanStatus(loanId);
+
+		String status = details.get().getLoanStatus();
+		if (status == "REJECTED")
+			status = status.concat(" " + details.get().getRemarks());
+		return new ResponseEntity<String>(status, HttpStatus.OK);
 	}
 }

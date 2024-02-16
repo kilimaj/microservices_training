@@ -6,7 +6,7 @@ import dev.kilima.training.loan.entity.LoanDetails;
 
 public interface LoanService {
 	Optional<Long> getMaxId();
-	String checkLoanStatus(long loanId);
+	Optional<LoanDetails> checkLoanStatus(long loanId);
 	long applyForLoan(LoanDetails loan);
 	
 }
