@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import dev.kilima.training.loan.dto.CreditScore;
 import dev.kilima.training.loan.entity.LoanDetails;
 import dev.kilima.training.loan.exceptions.PanCardNotFoundException;
+import dev.kilima.training.loan.repository.CreditScoreProxy;
 import dev.kilima.training.loan.repository.LoanDetailsRepo;
 import dev.kilima.training.loan.service.LoanService;
 
@@ -21,6 +22,9 @@ public class LoanServiceImpl implements LoanService {
 
 	@Autowired
 	RestTemplate template;
+
+	@Autowired
+	CreditScoreProxy feign;
 
 	@Override
 	public Optional<Long> getMaxId() {
@@ -55,14 +59,22 @@ public class LoanServiceImpl implements LoanService {
 	public String loanVerification(long loanId) {
 		LoanDetails loandetails = repo.getLoanDetailsById(loanId);
 		String pancard = loandetails.getPancard();
+
 		// Connect to CreditScore - service using RestTemplate
-		String url = "http://localhost:8092/creditscore/" + pancard;
-		CreditScore creditScore = template.getForObject(url, CreditScore.class);
-		System.out.println(creditScore);
-		if (creditScore == null)
+		// String url = "http://localhost:8092/creditscore/" + pancard;
+		// CreditScore creditScore = template.getForObject(url, CreditScore.class);
+
+		// Using Feign Client
+		Optional<CreditScore> creditScore = feign.getCreditScore(pancard);
+
+		System.out.println("using optional " + creditScore);
+		CreditScore score = creditScore.get(); // casting from optional to concrete class
+		System.out.println("after casting " + score);
+
+		if (score == null)
 			throw new PanCardNotFoundException();
-		loandetails.setCreditscore(creditScore.getCreditscore());
-		if (creditScore.getCreditscore() >= 600) {
+		loandetails.setCreditscore(score.getCreditscore());
+		if (score.getCreditscore() >= 600) {
 			loandetails.setLoanStatus("APPROVED");
 			loandetails.setDateSanctioned(LocalDate.now().toString());
 		} else {
