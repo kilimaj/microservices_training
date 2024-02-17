@@ -9,4 +9,5 @@ public interface CreditScoreService {
 	void add(CreditScore credit);
 	List<CreditScore> findAll();
 	Optional<CreditScore> getCreditScore(String pancard);
+	Optional<Double> getScoreByPancard(String pancard);
 }

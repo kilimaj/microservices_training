@@ -64,17 +64,33 @@ public class LoanServiceImpl implements LoanService {
 		// String url = "http://localhost:8092/creditscore/" + pancard;
 		// CreditScore creditScore = template.getForObject(url, CreditScore.class);
 
+		/*
+		 * // Using Feign Client Optional<CreditScore> creditScore =
+		 * feign.getCreditScore(pancard);
+		 * 
+		 * System.out.println("using optional " + creditScore); CreditScore score =
+		 * creditScore.get(); // casting from optional to concrete class
+		 * System.out.println("after casting " + score);
+		 * 
+		 * if (score == null) throw new PanCardNotFoundException();
+		 * loandetails.setCreditscore(score.getCreditscore()); if
+		 * (score.getCreditscore() >= 600) { loandetails.setLoanStatus("APPROVED");
+		 * loandetails.setDateSanctioned(LocalDate.now().toString()); } else {
+		 * loandetails.setLoanStatus("REJECTED");
+		 * loandetails.setRemarks("Less Credit Score"); }
+		 */
+
 		// Using Feign Client
-		Optional<CreditScore> creditScore = feign.getCreditScore(pancard);
+		Optional<Double> creditScore = feign.getCreditScoreOnly(pancard);
 
 		System.out.println("using optional " + creditScore);
-		CreditScore score = creditScore.get(); // casting from optional to concrete class
+		Double score = creditScore.get(); // casting from optional to concrete class
 		System.out.println("after casting " + score);
 
 		if (score == null)
 			throw new PanCardNotFoundException();
-		loandetails.setCreditscore(score.getCreditscore());
-		if (score.getCreditscore() >= 600) {
+		loandetails.setCreditscore(score);
+		if (score >= 600) {
 			loandetails.setLoanStatus("APPROVED");
 			loandetails.setDateSanctioned(LocalDate.now().toString());
 		} else {

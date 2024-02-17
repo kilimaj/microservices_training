@@ -31,5 +31,12 @@ public class CreditScoreServiceImpl implements CreditScoreService{
 		Optional<CreditScore> creditscore = repo.findById(pancard);
 		return creditscore;
 	}
+
+	@Override
+	public Optional<Double> getScoreByPancard(String pancard) {
+		Optional<CreditScore> creditScore = repo.findById(pancard);
+		double score = creditScore.get().getCreditscore();
+		return Optional.of(score);
+	}
 	
 }

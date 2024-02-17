@@ -39,4 +39,10 @@ public class CreditScoreController {
 		Optional<CreditScore> score = service.getCreditScore(pancard);
 		return new ResponseEntity<Optional<CreditScore>>(score, HttpStatus.OK);
 	}
+	
+	@GetMapping("onlyscore/{pancard}")
+	public ResponseEntity<Optional<Double>> getCreditScoreOnly(@PathVariable String pancard) {
+		Optional<Double> score = service.getScoreByPancard(pancard);
+		return new ResponseEntity<Optional<Double>>(score, HttpStatus.OK);
+	}
 }

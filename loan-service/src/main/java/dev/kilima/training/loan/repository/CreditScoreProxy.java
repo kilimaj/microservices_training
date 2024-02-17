@@ -16,4 +16,7 @@ import dev.kilima.training.loan.dto.CreditScore;
 public interface CreditScoreProxy {
 	@GetMapping(value = "/{pancard}")
 	Optional<CreditScore> getCreditScore(@PathVariable String pancard);
+	
+	@GetMapping("onlyscore/{pancard}")
+	Optional<Double> getCreditScoreOnly(@PathVariable String pancard);
 }
