@@ -12,7 +12,7 @@ import dev.kilima.training.loan.dto.CreditScore;
  * The following should be used to send request from Feign Client which includes 
  * @FeignClient(name="service name", url="that shows on Eureka terminal"
  */
-@FeignClient(name = "creditscore-service", url = "http://localhost:8092/creditscore")
+@FeignClient(name = "creditscore-service", url = "http://localhost:8092/creditscoreapp/creditscore")
 public interface CreditScoreProxy {
 	@GetMapping(value = "/{pancard}")
 	Optional<CreditScore> getCreditScore(@PathVariable String pancard);
