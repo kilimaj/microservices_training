@@ -18,5 +18,5 @@ public interface CreditScoreProxy {
 	Optional<CreditScore> getCreditScore(@PathVariable String pancard);
 	
 	@GetMapping("onlyscore/{pancard}")
-	Optional<Double> getCreditScoreOnly(@PathVariable String pancard);
+	String getCreditScoreOnly(@PathVariable String pancard);
 }

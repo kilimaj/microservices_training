@@ -11,4 +11,9 @@ public class LoanServiceExceptionHandler {
 	public ResponseEntity<String> exception(PanCardNotFoundException ex) {
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
+
+	@ExceptionHandler(value = CreditServiceBreakDownException.class)
+	public ResponseEntity<String> exception(CreditServiceBreakDownException ex) {
+		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
+	}
 }

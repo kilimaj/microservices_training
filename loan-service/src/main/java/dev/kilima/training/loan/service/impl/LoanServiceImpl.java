@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import dev.kilima.training.loan.dto.CreditScore;
 import dev.kilima.training.loan.entity.LoanDetails;
+import dev.kilima.training.loan.exceptions.CreditServiceBreakDownException;
 import dev.kilima.training.loan.exceptions.PanCardNotFoundException;
 import dev.kilima.training.loan.repository.CreditScoreProxy;
 import dev.kilima.training.loan.repository.LoanDetailsRepo;
@@ -25,6 +26,9 @@ public class LoanServiceImpl implements LoanService {
 
 	@Autowired
 	CreditScoreProxy feign;
+
+	@Autowired
+	CircuitBreakingR4J r4j;
 
 	@Override
 	public Optional<Long> getMaxId() {
@@ -81,24 +85,39 @@ public class LoanServiceImpl implements LoanService {
 		 */
 
 		// Using Feign Client
-		Optional<Double> creditScore = feign.getCreditScoreOnly(pancard);
+		/*
+		 * Optional<Double> creditScore = feign.getCreditScoreOnly(pancard);
+		 * 
+		 * System.out.println("using optional " + creditScore); Double score =
+		 * creditScore.get(); // casting from optional to concrete class
+		 * System.out.println("after casting " + score);
+		 * 
+		 * if (score == null) throw new PanCardNotFoundException();
+		 * loandetails.setCreditscore(score); if (score >= 600) {
+		 * loandetails.setLoanStatus("APPROVED");
+		 * loandetails.setDateSanctioned(LocalDate.now().toString()); } else {
+		 * loandetails.setLoanStatus("REJECTED");
+		 * loandetails.setRemarks("Less Credit Score"); }
+		 */
 
-		System.out.println("using optional " + creditScore);
-		Double score = creditScore.get(); // casting from optional to concrete class
-		System.out.println("after casting " + score);
-
-		if (score == null)
-			throw new PanCardNotFoundException();
-		loandetails.setCreditscore(score);
-		if (score >= 600) {
+		// Using Circuit with Resilience4j execute the following code
+		Optional<CreditScore> r4jscore = r4j.getCreditScore(pancard);
+		System.out.println("using optional from circuit breaking " + r4jscore);
+		CreditScore score = r4jscore.get(); //casting from Optional to Concrete class
+		System.out.println("after casting "+ score);
+		
+		if (score.getPancard()==null)
+			throw new CreditServiceBreakDownException();//when using circuit breaking
+		loandetails.setCreditscore(score.getCreditscore());
+		if (score.getCreditscore()>600) {
 			loandetails.setLoanStatus("APPROVED");
 			loandetails.setDateSanctioned(LocalDate.now().toString());
 		} else {
 			loandetails.setLoanStatus("REJECTED");
 			loandetails.setRemarks("Less Credit Score");
 		}
-
 		repo.save(loandetails);
+		// repo.save(loandetails);
 		return "verified";
 	}
 
