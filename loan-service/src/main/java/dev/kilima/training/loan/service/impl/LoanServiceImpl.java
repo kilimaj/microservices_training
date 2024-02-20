@@ -10,6 +10,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import dev.kilima.training.loan.config.CircuitBreakingR4J;
 import dev.kilima.training.loan.config.CreditScoreProxy;
 import dev.kilima.training.loan.dto.CreditScore;
 import dev.kilima.training.loan.entity.LoanDetails;
