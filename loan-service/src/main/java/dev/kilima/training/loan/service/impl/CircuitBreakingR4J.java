@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import dev.kilima.training.loan.config.CreditScoreProxy;
 import dev.kilima.training.loan.dto.CreditScore;
-import dev.kilima.training.loan.repository.CreditScoreProxy;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Component

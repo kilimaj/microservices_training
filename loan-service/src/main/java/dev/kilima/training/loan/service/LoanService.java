@@ -9,5 +9,5 @@ public interface LoanService {
 	Optional<LoanDetails> checkLoanStatus(long loanId);
 	long applyForLoan(LoanDetails loan);
 	String loanVerification(long loanId);
-	
+	void usingDiscoveryClient(long loanid);
 }

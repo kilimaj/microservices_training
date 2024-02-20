@@ -40,7 +40,8 @@ public class LoanController {
 
 	@GetMapping("/verify/{loanId}")
 	public ResponseEntity<String> loanVerification(@PathVariable int loanId) {
-		String msg = loanService.loanVerification(loanId);
-		return new ResponseEntity<String>(msg, HttpStatus.OK);
+		// String msg = loanService.loanVerification(loanId);
+		loanService.usingDiscoveryClient(loanId);
+		return new ResponseEntity<String>("verified", HttpStatus.OK);
 	}
 }

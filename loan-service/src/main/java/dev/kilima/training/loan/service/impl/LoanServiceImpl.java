@@ -1,17 +1,19 @@
 package dev.kilima.training.loan.service.impl;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import dev.kilima.training.loan.config.CreditScoreProxy;
 import dev.kilima.training.loan.dto.CreditScore;
 import dev.kilima.training.loan.entity.LoanDetails;
 import dev.kilima.training.loan.exceptions.CreditServiceBreakDownException;
-import dev.kilima.training.loan.exceptions.PanCardNotFoundException;
-import dev.kilima.training.loan.repository.CreditScoreProxy;
 import dev.kilima.training.loan.repository.LoanDetailsRepo;
 import dev.kilima.training.loan.service.LoanService;
 
@@ -29,6 +31,9 @@ public class LoanServiceImpl implements LoanService {
 
 	@Autowired
 	CircuitBreakingR4J r4j;
+
+	@Autowired
+	DiscoveryClient discovery;
 
 	@Override
 	public Optional<Long> getMaxId() {
@@ -103,13 +108,13 @@ public class LoanServiceImpl implements LoanService {
 		// Using Circuit with Resilience4j execute the following code
 		Optional<CreditScore> r4jscore = r4j.getCreditScore(pancard);
 		System.out.println("using optional from circuit breaking " + r4jscore);
-		CreditScore score = r4jscore.get(); //casting from Optional to Concrete class
-		System.out.println("after casting "+ score);
-		
-		if (score.getPancard()==null)
-			throw new CreditServiceBreakDownException();//when using circuit breaking
+		CreditScore score = r4jscore.get(); // casting from Optional to Concrete class
+		System.out.println("after casting " + score);
+
+		if (score.getPancard() == null)
+			throw new CreditServiceBreakDownException();// when using circuit breaking
 		loandetails.setCreditscore(score.getCreditscore());
-		if (score.getCreditscore()>600) {
+		if (score.getCreditscore() > 600) {
 			loandetails.setLoanStatus("APPROVED");
 			loandetails.setDateSanctioned(LocalDate.now().toString());
 		} else {
@@ -119,6 +124,25 @@ public class LoanServiceImpl implements LoanService {
 		repo.save(loandetails);
 		// repo.save(loandetails);
 		return "verified";
+	}
+
+	@Override
+	public void usingDiscoveryClient(long loanid) {
+		List<ServiceInstance> services = discovery.getInstances("creditscore-service");
+		System.out.println("no. of instances = " + services.size());
+		System.out.println("instances = " + services);
+		ServiceInstance serv = services.get(0);
+		String uri = serv.getUri().toString();
+		System.out.println(uri);
+
+		LoanDetails loandetails = repo.getLoanDetailsById(loanid);
+		String pancard = loandetails.getPancard();
+
+		// Using feign client
+		Optional<CreditScore> creditScore = feign.getCreditScore(pancard);
+		CreditScore score = creditScore.get();
+		System.out.println(score);
+
 	}
 
 }
