@@ -30,13 +30,13 @@ public class SpringSessionController {
 
 	@PostMapping("/persist")
 	public String persistMessage(@RequestParam("msg") String msg, HttpServletRequest request) {
-		List<String> messages = (List<String>) request.getSession().getAttribute("REDIS_SESSION_MESSAGE");
+		List<String> messages = (List<String>) request.getSession().getAttribute("REDIS_SESSION_MESSAGES");
 		if (messages == null) {
 			messages = new ArrayList<String>();
-			request.getSession().setAttribute("REDIS_SESSION_MESSAGE", messages);
+			request.getSession().setAttribute("REDIS_SESSION_MESSAGES", messages);
 		}
 		messages.add(msg);
-		request.getSession().setAttribute("REDIS_SESSION_MESSAGE", messages);
+		request.getSession().setAttribute("REDIS_SESSION_MESSAGES", messages);
 		return "redirect:/home";
 	}
 
