@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Spring Redis Session Example</title>
+</head>
+
+<body>
+	<div>
+		<form th:action="@{/persist}" method="post">
+			<label> <textarea rows="2" cols="40" placeholder="Enter some text..." name="msg"></textarea>
+			</label> <br> <input type="submit" value="Save Messages">
+		</form>
+	</div>
+	<div>
+		<h2>Messages</h2>
+		<ul th:each="message : ${sessionMessages}">
+			<li th:text="${message}"></li>
+		</ul>
+	</div>
+	<div>
+		<h2>Session ID</h2>
+		Current Session ID is <span th:text="${sessionId}"></span>
+	</div>
+	<div>
+		<form th:action="@{/destroy}" method="post">
+			<input type="submit" value="Destroy Session" />
+		</form>
+	</div>
+</body>
+
+</html>
